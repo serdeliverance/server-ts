@@ -1,6 +1,6 @@
 # server-ts
 
-A demo webapp built using Node, Express and Typescript
+A demo webapp built with Node, Express and Typescript
 
 ## Prerequisites
 
