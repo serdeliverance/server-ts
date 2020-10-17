@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express'
+import { NextFunction } from 'express-serve-static-core'
 
 /**
  * Interface that assures that request has a body element which is typed correctly.
@@ -9,6 +10,20 @@ import { Router, Request, Response } from 'express'
  */
 interface RequestWithBody extends Request {
   body: { [key: string]: string | undefined }
+}
+
+const requiredAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (req.session && req.session.loggedIn) {
+    next()
+    return
+  }
+
+  res.status(403)
+  res.send('Not permitted')
 }
 
 let router = Router()
@@ -61,6 +76,10 @@ router.get('/', (req: Request, res: Response) => {
 router.get('/logout', (req: Request, res: Response) => {
   req.session = null
   res.redirect('/')
+})
+
+router.get('/protected', requiredAuth, (req: Request, res: Response) => {
+  res.send('Welcome to protected route, logged user')
 })
 
 export { router }
